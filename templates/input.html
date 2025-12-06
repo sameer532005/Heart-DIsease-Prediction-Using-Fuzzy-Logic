@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details | Fuzzy Heart Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="app-bg">
+
+    <div class="input-shell glass-card">
+        <!-- Left: heart image -->
+        <div class="input-left">
+            <img src="{{ url_for('static', filename='heart.png') }}"
+                 alt="Heart" class="input-heart-img">
+            <div class="input-heart-caption">
+                Fuzzy Heart<br><span>Risk Prediction Model</span>
+            </div>
+        </div>
+
+        <!-- Right: patient form -->
+        <div class="input-right">
+            <h1 class="title">🩺 Enter Patient Details</h1>
+            <p class="subtitle">Fill the clinical parameters for fuzzy risk evaluation.</p>
+
+            <form method="POST" action="{{ url_for('predict') }}">
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Patient Name</label>
+                        <input type="text" name="patient_name" placeholder="Enter patient name">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Age</label>
+                        <input type="number" name="age" value="{{ age }}" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Sex</label>
+                        <select name="sex" required>
+                            <option value="1" {% if sex == 1 %}selected{% endif %}>Male</option>
+                            <option value="0" {% if sex == 0 %}selected{% endif %}>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Chest Pain Type</label>
+                        <select name="cp">
+                            <option value="0" {% if cp == 0 %}selected{% endif %}>Typical Angina</option>
+                            <option value="1" {% if cp == 1 %}selected{% endif %}>Atypical Angina</option>
+                            <option value="2" {% if cp == 2 %}selected{% endif %}>Non-Anginal Pain</option>
+                            <option value="3" {% if cp == 3 %}selected{% endif %}>Asymptomatic</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Resting BP (mmHg)</label>
+                        <input type="number" name="trestbps" value="{{ trestbps }}" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Cholesterol (mg/dl)</label>
+                        <input type="number" name="chol" value="{{ chol }}" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Fasting Sugar &gt; 120 mg/dl</label>
+                        <select name="fbs">
+                            <option value="1" {% if fbs == 1 %}selected{% endif %}>True</option>
+                            <option value="0" {% if fbs == 0 %}selected{% endif %}>False</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Rest ECG</label>
+                        <select name="restecg">
+                            <option value="0" {% if restecg == 0 %}selected{% endif %}>Normal</option>
+                            <option value="1" {% if restecg == 1 %}selected{% endif %}>ST-T Abnormality</option>
+                            <option value="2" {% if restecg == 2 %}selected{% endif %}>LV Hypertrophy</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Max Heart Rate</label>
+                        <input type="number" name="thalach" value="{{ thalach }}" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Exercise-Induced Angina</label>
+                        <select name="exang">
+                            <option value="1" {% if exang == 1 %}selected{% endif %}>Yes</option>
+                            <option value="0" {% if exang == 0 %}selected{% endif %}>No</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Oldpeak (ST Depression)</label>
+                        <input type="number" step="0.1" name="oldpeak" value="{{ oldpeak }}" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Slope</label>
+                        <select name="slope">
+                            <option value="0" {% if slope == 0 %}selected{% endif %}>Upsloping</option>
+                            <option value="1" {% if slope == 1 %}selected{% endif %}>Flat</option>
+                            <option value="2" {% if slope == 2 %}selected{% endif %}>Downsloping</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Number of Major Vessels</label>
+                        <select name="ca">
+                            <option value="0" {% if ca == 0 %}selected{% endif %}>0</option>
+                            <option value="1" {% if ca == 1 %}selected{% endif %}>1</option>
+                            <option value="2" {% if ca == 2 %}selected{% endif %}>2</option>
+                            <option value="3" {% if ca == 3 %}selected{% endif %}>3</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Thalassemia Type</label>
+                        <select name="thal">
+                            <option value="1" {% if thal == 1 %}selected{% endif %}>Normal</option>
+                            <option value="2" {% if thal == 2 %}selected{% endif %}>Fixed Defect</option>
+                            <option value="3" {% if thal == 3 %}selected{% endif %}>Reversible Defect</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-row" style="margin-top: 18px;">
+                    <button type="submit" class="btn primary-btn">🔍 Predict Risk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

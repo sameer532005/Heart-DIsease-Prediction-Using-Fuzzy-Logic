@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Risk Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="app-bg">
+    <div class="dashboard-shell">
+        <!-- Left sidebar -->
+        <aside class="sidebar">
+            <div class="logo-badge small">
+                <span class="logo-dot"></span>
+                <span class="logo-text">hbc</span>
+                <span class="logo-sub">track</span>
+            </div>
+            <nav class="side-nav">
+                <button class="icon-btn active">🏠</button>
+                <button class="icon-btn">❤️</button>
+                <button class="icon-btn">📊</button>
+                <button class="icon-btn">⚙️</button>
+            </nav>
+        </aside>
+
+        <!-- Main dashboard -->
+        <main class="dashboard-card glass-card">
+            <!-- Top bar -->
+            <header class="topbar">
+                <div class="top-left">
+                    <h1 class="dash-title">Medical Dashboard</h1>
+                    <p class="dash-subtitle">
+                        Heart disease risk prediction using fuzzy logic
+                    </p>
+                </div>
+                <div class="top-right">
+                    <!-- removed Blood / Height / Weight chips -->
+                    <div class="profile-pill">
+                        <div class="avatar">🧑</div>
+                        <div>
+                            <div class="profile-name">{{ patient_name }}</div>
+                            <div class="profile-meta">Fuzzy evaluation</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="dashboard-body">
+                <!-- Left: heart visual block -->
+                <div class="heart-panel">
+                    <div class="heart-gradient"></div>
+                    <div class="heart-caption">
+                        Fuzzy Heart Model<br>
+                        <span>Risk assessment</span>
+                    </div>
+                </div>
+
+                <!-- Right: metrics panel -->
+                <div class="metrics-panel">
+                    <!-- Risk summary -->
+                    <div class="risk-summary">
+                        <h2>Risk Score</h2>
+                        <div class="risk-row">
+                            <div class="risk-score">
+                                <span class="risk-number">{{ score }}%</span>
+                                <span class="risk-label-text">Overall risk score</span>
+                            </div>
+                            <div class="risk-level">
+                                <span class="label-text">Risk Level</span>
+                                {% set label_lower = label|lower %}
+                                {% if label_lower == "low" %}
+                                    <span class="risk-pill low">Low</span>
+                                {% elif label_lower == "medium" %}
+                                    <span class="risk-pill medium">Medium</span>
+                                {% else %}
+                                    <span class="risk-pill high">High</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Risk bar -->
+                        <div class="risk-bar-wrapper">
+                            <div class="risk-bar">
+                                <div class="risk-fill" style="width: {{ score }}%;"></div>
+                            </div>
+                            <div class="risk-bar-labels">
+                                <span>0%</span><span>50%</span><span>100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fuzzy activations -->
+                    <div class="cards-row">
+                        <div class="mini-card">
+                            <div class="mini-label">Low Activation</div>
+                            <div class="mini-value">{{ low|round(2) }}</div>
+                        </div>
+                        <div class="mini-card">
+                            <div class="mini-label">Medium Activation</div>
+                            <div class="mini-value">{{ med|round(2) }}</div>
+                        </div>
+                        <div class="mini-card">
+                            <div class="mini-label">High Activation</div>
+                            <div class="mini-value">{{ high|round(2) }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Composition + summary -->
+                    <div class="bottom-grid">
+                        <div class="trend-card">
+                            <h3>Fuzzy Risk Composition</h3>
+                            <p class="trend-sub">
+                                The bar below shows how Low / Medium / High memberships
+                                contribute to the final risk score.
+                            </p>
+                            <div class="stacked-bar">
+                                <div class="stack low" style="flex: {{ low + 0.01 }};"></div>
+                                <div class="stack med" style="flex: {{ med + 0.01 }};"></div>
+                                <div class="stack high" style="flex: {{ high + 0.01 }};"></div>
+                            </div>
+                            <div class="stack-legend">
+                                <span class="dot low"></span> Low
+                                <span class="dot med"></span> Medium
+                                <span class="dot high"></span> High
+                            </div>
+                        </div>
+
+                        <div class="table-card">
+                            <h3>Summary</h3>
+                            <table class="summary-table">
+                                <tbody>
+                                    <tr>
+                                        <td>Defuzzified Score</td>
+                                        <td>{{ score }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Final Risk Level</td>
+                                        <td>{{ label|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Low / Med / High</td>
+                                        <td>{{ low|round(2) }} / {{ med|round(2) }} / {{ high|round(2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Model Type</td>
+                                        <td>Fuzzy Logic (Triangular MFs)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Input parameters table -->
+                    <div class="history-card">
+                        <h3>Input Parameters Used for Prediction</h3>
+                        <table class="input-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Age</td><td>{{ features.age }}</td></tr>
+                                <tr>
+                                    <td>Sex</td>
+                                    <td>{% if features.sex == 1 %}Male{% else %}Female{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Chest Pain Type</td>
+                                    <td>
+                                        {% if features.cp == 0 %}Typical Angina
+                                        {% elif features.cp == 1 %}Atypical Angina
+                                        {% elif features.cp == 2 %}Non-Anginal Pain
+                                        {% else %}Asymptomatic{% endif %}
+                                        ({{ features.cp }})
+                                    </td>
+                                </tr>
+                                <tr><td>Resting BP (mmHg)</td><td>{{ features.trestbps }}</td></tr>
+                                <tr><td>Cholesterol (mg/dl)</td><td>{{ features.chol }}</td></tr>
+                                <tr>
+                                    <td>Fasting Sugar &gt; 120 mg/dl</td>
+                                    <td>{% if features.fbs == 1 %}True{% else %}False{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Rest ECG</td>
+                                    <td>
+                                        {% if features.restecg == 0 %}Normal
+                                        {% elif features.restecg == 1 %}ST-T Abnormality
+                                        {% else %}LV Hypertrophy{% endif %}
+                                        ({{ features.restecg }})
+                                    </td>
+                                </tr>
+                                <tr><td>Max Heart Rate</td><td>{{ features.thalach }}</td></tr>
+                                <tr>
+                                    <td>Exercise-Induced Angina</td>
+                                    <td>{% if features.exang == 1 %}Yes{% else %}No{% endif %}</td>
+                                </tr>
+                                <tr><td>Oldpeak (ST Depression)</td><td>{{ features.oldpeak }}</td></tr>
+                                <tr>
+                                    <td>Slope</td>
+                                    <td>
+                                        {% if features.slope == 0 %}Upsloping
+                                        {% elif features.slope == 1 %}Flat
+                                        {% else %}Downsloping{% endif %}
+                                        ({{ features.slope }})
+                                    </td>
+                                </tr>
+                                <tr><td>Number of Major Vessels</td><td>{{ features.ca }}</td></tr>
+                                <tr>
+                                    <td>Thalassemia Type</td>
+                                    <td>
+                                        {% if features.thal == 1 %}Normal
+                                        {% elif features.thal == 2 %}Fixed Defect
+                                        {% else %}Reversible Defect{% endif %}
+                                        ({{ features.thal }})
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="action-row">
+                        <a href="{{ url_for('input_form') }}" class="btn primary-btn">
+                            🔁 Make Another Prediction
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

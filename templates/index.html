@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Fuzzy Heart Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="app-bg">
+    <div class="login-wrapper">
+        <!-- Left panel -->
+        <div class="login-hero">
+            <div class="logo-badge">
+                <span class="logo-dot"></span>
+                <span class="logo-text">hbc</span>
+                <span class="logo-sub">track</span>
+            </div>
+            <h1 class="hero-title">Heart Disease<br>Risk Predictor</h1>
+            <p class="hero-text">
+                Fuzzy logic based decision support system<br>
+                for early heart risk assessment.
+            </p>
+        </div>
+
+        <!-- Right panel -->
+        <div class="form-card glass-card">
+            <h2 class="title">Welcome back 👋</h2>
+            <p class="subtitle">Login to access the medical dashboard</p>
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn primary-btn">Login</button>
+            </form>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

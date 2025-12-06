@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Patients | Fuzzy Heart Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="app-bg">
+    <div class="menu-shell glass-card">
+        <h1 class="title">All Patient Predictions</h1>
+        <p class="subtitle">Click a row to open the full fuzzy dashboard.</p>
+
+        <table class="input-table patients-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date / Time</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Score</th>
+                    <th>Risk Level</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in patients %}
+                    <tr>
+                        <td>{{ p.id }}</td>
+                        <td>{{ p.created_at }}</td>
+                        <td>{{ p.name or "Unknown" }}</td>
+                        <td>{{ p.age }}</td>
+                        <td>{% if p.sex == 1 %}Male{% else %}Female{% endif %}</td>
+                        <td>{{ "%.1f"|format(p.score) }}%</td>
+                        <td>{{ p.label|capitalize }}</td>
+                        <td>
+                            <a href="{{ url_for('view_patient', pid=p.id) }}" class="link-btn">
+                                Open
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="action-row" style="margin-top:16px;">
+            <a href="{{ url_for('dashboard') }}" class="btn primary-btn">
+                ⬅ Back to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>
